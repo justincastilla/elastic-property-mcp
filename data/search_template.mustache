@@ -1,0 +1,89 @@
+{
+    "_source": false,
+    "size": 5,
+    "fields": ["title", "tax", "maintenance-fee", "bathrooms", "bedrooms", "square-footage", "home-price", "property-features"],
+    "retriever": {
+        "standard": {
+            "query": {
+                "semantic": {
+                    "field": "body_content_semantic_text",
+                    "query": "{{query}}"
+                }
+            },
+            "filter": {
+                "bool": {
+                    "must": [
+                        {{#distance}}{
+                            "geo_distance": {
+                                "distance": "{{distance}}",
+                                "location": {
+                                    "lat": {{latitude}},
+                                    "lon": {{longitude}}
+                                }
+                            }
+                        }{{/distance}}
+                        {{#bedrooms}}{{#distance}},{{/distance}}{
+                            "range": {
+                                "bedrooms": {
+                                    "gte": {{bedrooms}}
+                                }
+                            }
+                        }{{/bedrooms}}
+                        {{#bathrooms}}{{#distance}}{{^bedrooms}},{{/bedrooms}}{{/distance}}{{#bedrooms}},{{/bedrooms}}{
+                            "range": {
+                                "bathrooms": {
+                                    "gte": {{bathrooms}}
+                                }
+                            }
+                        }{{/bathrooms}}
+                        {{#tax}}{{#distance}}{{^bedrooms}}{{^bathrooms}},{{/bathrooms}}{{/bedrooms}}{{/distance}}{{#bedrooms}}{{^bathrooms}},{{/bathrooms}}{{/bedrooms}}{{#bathrooms}},{{/bathrooms}}{
+                            "range": {
+                                "tax": {
+                                    "lte": {{tax}}
+                                }
+                            }
+                        }{{/tax}}
+                        {{#maintenance}}{{#distance}}{{^bedrooms}}{{^bathrooms}}{{^tax}},{{/tax}}{{/bathrooms}}{{/bedrooms}}{{/distance}}{{#bedrooms}}{{^bathrooms}}{{^tax}},{{/tax}}{{/bathrooms}}{{/bedrooms}}{{#bathrooms}}{{^tax}},{{/tax}}{{/bathrooms}}{{#tax}},{{/tax}}{
+                            "range": {
+                                "maintenance-fee": {
+                                    "lte": {{maintenance}}
+                                }
+                            }
+                        }{{/maintenance}}
+                        {{#square_footage_max}}{{#distance}}{{^bedrooms}}{{^bathrooms}}{{^tax}}{{^maintenance}},{{/maintenance}}{{/tax}}{{/bathrooms}}{{/bedrooms}}{{/distance}}{{#bedrooms}}{{^bathrooms}}{{^tax}}{{^maintenance}},{{/maintenance}}{{/tax}}{{/bathrooms}}{{/bedrooms}}{{#bathrooms}}{{^tax}}{{^maintenance}},{{/maintenance}}{{/tax}}{{/bathrooms}}{{#tax}}{{^maintenance}},{{/maintenance}}{{/tax}}{{#maintenance}},{{/maintenance}}{
+                            "range": {
+                                "square-footage": {
+                                    "gte": {{#square_footage_min}}{{square_footage_min}}{{/square_footage_min}}{{^square_footage_min}}0{{/square_footage_min}},
+                                    "lte": {{square_footage_max}}
+                                }
+                            }
+                        }{{/square_footage_max}}
+                        {{#home_price_max}}{{#distance}}{{^bedrooms}}{{^bathrooms}}{{^tax}}{{^maintenance}}{{^square_footage}},{{/square_footage}}{{/maintenance}}{{/tax}}{{/bathrooms}}{{/bedrooms}}{{/distance}}{{#bedrooms}}{{^bathrooms}}{{^tax}}{{^maintenance}}{{^square_footage}},{{/square_footage}}{{/maintenance}}{{/tax}}{{/bathrooms}}{{/bedrooms}}{{#bathrooms}}{{^tax}}{{^maintenance}}{{^square_footage}},{{/square_footage}}{{/maintenance}}{{/tax}}{{/bathrooms}}{{#tax}}{{^maintenance}}{{^square_footage}},{{/square_footage}}{{/maintenance}}{{/tax}}{{#maintenance}}{{^square_footage}},{{/square_footage}}{{/maintenance}}{{#square_footage}},{{/square_footage}}{
+                            "range": {
+                                "home-price": {
+                                    "gte": {{#home_price_min}}{{home_price_min}}{{/home_price_min}}{{^home_price_min}}0{{/home_price_min}},
+                                    "lte": {{home_price_max}}
+                                }
+                            }
+                        }{{/home_price_max}}
+                        {{#feature}},{
+                            "bool": {
+                                "should": [
+                                    {
+                                        "match": {
+                                            "property-features": {
+                                                "query": "{{feature}}",
+                                                "operator": "or"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "minimum_should_match": 1
+                            }
+                        }{{/feature}}
+                    ]
+                }
+            }
+        }
+    }
+} 
