@@ -15,6 +15,9 @@ Search queries are rendered using a Mustache-based template [`search_template.mu
 
 The query combines a semantic_text query with the above filtering. More information on the `semantic_text` field type may be found [here](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/semantic-text).
 
+### Google Maps Geocoding
+This MCP server uses the Google Maps Geocoding service, which returns a Latitude and Longitude coordinate pair when a natural langauge location is submitted. This is helpful for creating geolocation searches, such as properties within 5 miles of a city, or when a user submits a city name without coordinates. A Google Maps API Key is required for this service and may be obtained [here](https://cloud.google.com/looker/docs/studio/add-a-google-maps-api-key).
+
 ### Workflow
 1. The user sends a search request via Claude Desktop.
 2. The server normalizes parameters and renders the search template.
@@ -60,4 +63,26 @@ python ingest_properties.py
 ```bash
 mcp install elastic_mcp_server.py
 ```
+
+The MCP CLI will install an entry into Claude Desktop's MCP profile manifest that should but not necessarily look similar to this:
+
+```json
+"elasticsearch-mcp-server": {
+  "command": "/Users/justin/.pyenv/shims/uv",
+  "args": [
+    "run",
+    "--with",
+    "mcp[cli]",
+    "mcp",
+    "run",
+    "/Users/justin/Code/property-mcp/elastic_mcp_server.py"
+  ],
+  "env": {
+    "ES_ENDPOINT": "<your-elastic-endpoint>",
+    "ES_API_KEY": "<your-elastic-api-key>",
+    "GOOGLE_MAPS_API_KEY": "<your-google-maps-api-key>"
+  }
+}
+```
+
 7. Open your Claude Desktop Application and start searching for properties in Florida!
