@@ -12,7 +12,7 @@
       "filter": {
         "synonyms_filter": {
           "type": "synonym",
-          "synonyms_set": "property-details",
+          "synonyms_set": "property_details",
           "updateable": true
         }
       }
@@ -21,9 +21,6 @@
   "mappings": {
     "dynamic": "false",
     "properties": {
-      "additional_urls": {
-        "type": "keyword"
-      },
       "tax": {
         "type": "integer"
       },
@@ -43,24 +40,10 @@
       "domains": {
         "type": "keyword"
       },
-      "full_html": {
-        "type": "text",
-        "index": false
-      },
-      "geo_point": {
-        "properties": {
-          "lat": {
-            "type": "float"
-          },
-          "lon": {
-            "type": "float"
-          }
-        }
-      },
       "headings": {
         "type": "text"
       },
-      "home-price": {
+      "home_price": {
         "type": "integer"
       },
       "id": {
@@ -69,22 +52,13 @@
       "last_crawled_at": {
         "type": "date"
       },
-      "latitude": {
-        "type": "float"
-      },
-      "links": {
-        "type": "keyword"
-      },
-      "listing-agent-info": {
+      "listing_agent_info": {
         "type": "text"
       },
       "location": {
         "type": "geo_point"
       },
-      "longitude": {
-        "type": "float"
-      },
-      "maintenance-fee": {
+      "maintenance_fee": {
         "type": "integer"
       },
       "meta_description": {
@@ -99,45 +73,24 @@
       "bedrooms": {
         "type": "float"
       },
-      "property-description": {
+      "property_description": {
         "type": "text",
         "search_analyzer": "my_analyzer"
       },
-      "property-features": {
+      "property_features": {
         "type": "text",
         "search_analyzer": "my_analyzer"
       },
-      "property-status": {
+      "property_status": {
         "type": "keyword"
       },
-      "square-footage": {
+      "square_footage": {
         "type": "float"
       },
       "title": {
         "type": "text"
       },
       "url": {
-        "type": "keyword"
-      },
-      "url_host": {
-        "type": "keyword"
-      },
-      "url_path": {
-        "type": "keyword"
-      },
-      "url_path_dir1": {
-        "type": "keyword"
-      },
-      "url_path_dir2": {
-        "type": "keyword"
-      },
-      "url_path_dir3": {
-        "type": "keyword"
-      },
-      "url_port": {
-        "type": "keyword"
-      },
-      "url_scheme": {
         "type": "keyword"
       }
     }

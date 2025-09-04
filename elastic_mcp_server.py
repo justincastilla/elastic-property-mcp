@@ -81,7 +81,7 @@ async def get_properties_template_params() -> Dict[str, Any]:
       - square_footage_max: Maximum property square footage
       - home_price_min: Minimum home price.  If only a max home price is provided, set this to 0. otherwise, set this to the minimum home price specified by the user.
       - home_price_max: Maximum home price
-      - features: Home features such as AC, pool, updated kitchens, etc should be listed as a single string For example features such as pool and updated kitchen should be formated as pool updated kitchen
+      - property_features: Home features such as AC, pool, updated kitchens, etc should be listed as a single string For example features such as pool and updated kitchen should be formated as pool updated kitchen
       """
 
     params_context = {
@@ -183,7 +183,7 @@ async def search_template(
     home_price_max: Optional[float] = None,
     bathrooms: Optional[float] = None,
     square_footage: Optional[int] = None,
-    feature: Optional[str] = None,
+    property_features: Optional[str] = None,
     maintenance: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Execute a search template with the given parameters."""
@@ -206,7 +206,7 @@ async def search_template(
             "home_price_max": home_price_max,
             "bathrooms": bathrooms,
             "square_footage": square_footage,
-            "feature": feature,
+            "property_features": property_features,
             "maintenance": maintenance,
         }
 
@@ -243,15 +243,16 @@ async def search_template(
         results = []
         for hit in hits:
             fields = hit.get("fields", {})
+            logging.info(f"Hit fields: {fields}")
             result = {
                 "title": fields.get("title", ["No title"])[0],
-                "tax": fields.get("annual-tax", ["N/A"])[0],
-                "maintenance": fields.get("maintenance-fee", ["N/A"])[0],
-                "bathrooms": fields.get("number-of-bathrooms", ["N/A"])[0],
-                "bedrooms": fields.get("number-of-bedrooms", ["N/A"])[0],
-                "square_footage": fields.get("square-footage", ["N/A"])[0],
-                "home_price": fields.get("home-price", ["N/A"])[0],
-                "features": fields.get("property-features", ["N/A"])[0],
+                "tax": fields.get("tax", ["N/A"])[0],
+                "maintenance_fee": fields.get("maintenance_fee", ["N/A"])[0],
+                "bathrooms": fields.get("bathrooms", ["N/A"])[0],
+                "bedrooms": fields.get("bedrooms", ["N/A"])[0],
+                "square_footage": fields.get("square_footage", ["N/A"])[0],
+                "home_price": fields.get("home_price", ["N/A"])[0],
+                "property_features": fields.get("property_features", ["N/A"])[0],
             }
             results.append(result)
 
